@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	//"gopkg.in/yaml.v2"
@@ -28,8 +29,21 @@ func main() {
 	inputDir := args[0]
 	outputDir := args[1]
 
-	fmt.Printf("Input dir is %s\n", inputDir)
-	fmt.Printf("Output dir is %s\n", outputDir)
-	fmt.Printf("Key prefix is %s\n", *keyPrefix)
-	fmt.Printf("Global key prefix is %s\n", *globalKeyPrefix)
+	err := run(inputDir, outputDir, *keyPrefix, *globalKeyPrefix)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(2)
+	}
+}
+
+func run(inputDir, outputDir, keyPrefix, globalKeyPrefix string) error {
+
+	appDirs, err := ioutil.ReadDir(inputDir)
+	if err != nil {
+		return fmt.Errorf("error reading input dir: %s", err)
+	}
+
+	fmt.Printf("App dirs: %#v\n", appDirs)
+
+	return nil
 }
